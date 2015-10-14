@@ -1,23 +1,19 @@
 package controllers
 
 import java.text.SimpleDateFormat
-import java.util.{Date, Calendar}
+import java.util.{Calendar, Date}
+import javax.inject._
 
-import play.api._
-import play.api.mvc._
-import play.api.i18n._
+import dal._
+import models._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.Constraints._
+import play.api.i18n._
 import play.api.libs.json.Json
-import models._
-import dal._
+import play.api.mvc._
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
-
-import javax.inject._
-
 import scala.util.Random
 
 class MessageController @Inject()(repo: MessageRepository, val messagesApi: MessagesApi)
@@ -45,7 +41,7 @@ class MessageController @Inject()(repo: MessageRepository, val messagesApi: Mess
       talk => {
         repo.create(talk.dialogId, talk.username, talk.content, currentUTCDateString()).map(msg => {
           reply(msg)
-          Redirect(routes.DialogController.dialog(talk.dialogId))
+          NoContent
         })
       }
     )
@@ -58,20 +54,21 @@ class MessageController @Inject()(repo: MessageRepository, val messagesApi: Mess
       },
       talk => {
         repo.create(talk.dialogId, "Yoyo", talk.content, currentUTCDateString()).map(msg => {
-          Redirect(routes.DialogController.dialog(talk.dialogId))
+          NoContent
         })
       }
     )
   }
 
   def reply(message: Message): Unit = {
-    repo.search(message.content).map(matchedMessages => {
-      val answers = matchedMessages.filter(_.id != message.id).map(_.id + 1).map(id => Await.result(repo.getById(id), Duration.Inf))
-      if (!answers.isEmpty) {
-        val index = new Random(Calendar.getInstance().getTimeInMillis).nextInt(answers.size)
-        repo.create(message.dialogId, "Yoyo", answers(index).content, currentUTCDateString())
-      }
-    })
+    Await.result(
+      repo.search(message.content).map(matchedMessages => {
+        val answers = matchedMessages.filter(_.id != message.id).map(_.id + 1).map(id => Await.result(repo.getById(id), Duration.Inf)).filter(_.username != message.username)
+        if (!answers.isEmpty) {
+          val index = new Random(Calendar.getInstance().getTimeInMillis).nextInt(answers.size)
+          repo.create(message.dialogId, "Yoyo", answers(index).content, currentUTCDateString())
+        }
+      }), Duration.Inf)
   }
 
   def toUTCDateString(date: Date) = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX").format(date)

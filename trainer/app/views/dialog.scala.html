@@ -3,25 +3,23 @@
 @import helper._
 
 @main("Train my chihuahua") {
-	<script type='text/javascript' src='@routes.Assets.versioned("javascripts/dialog.js")'></script>
+    <script type='text/javascript' src='@routes.Assets.versioned("javascripts/dialog.js")'></script>
 
-	<ul id="messages"></ul>
+    <ul id="messages"></ul>
 
-  @form(routes.MessageController.talk()) {
-        <textarea name="content"></textarea>
-		<input id="dialog-id" type="hidden" name="dialogId" value="@dialog.id"/>
-		<input type="hidden" name="username" value="@dialog.username"/>
-		<div class="buttons">
-			<input type="submit" value="Send"/>
-		</div>
-	}
+    <form id="form-send">
+        <input id="input-username" type="hidden" name="username" value="@dialog.username"/>
+        <input id="dialog-id" type="hidden" name="dialogId" value="@dialog.id"/>
+        <textarea id="content" name="content" value=""></textarea>
+        <div class="buttons">
+            <input id="btn-send" type="submit" value="Send"/>
+        </div>
+    </form>
 
-    @form(routes.MessageController.teach()) {
-        <textarea name="content"></textarea>
-        <input type="hidden" name="dialogId" value="@dialog.id"/>
-        <input type="hidden" name="username" value="@dialog.username"/>
+    <form id="form-teach">
+        <textarea id="teach-content" name="content"></textarea>
         <div class="buttons">
             <input type="submit" value="Teach Yoyo"/>
         </div>
-    }
+    </form>
 }
