@@ -1,9 +1,7 @@
+import org.junit.runner._
 import org.specs2.mutable._
 import org.specs2.runner._
-import org.junit.runner._
-
 import play.api.test._
-import play.api.test.Helpers._
 
 /**
  * add your integration spec here.
@@ -18,7 +16,7 @@ class IntegrationSpec extends Specification {
 
       browser.goTo("http://localhost:" + port)
 
-      browser.pageSource must contain("Add Person")
+      browser.pageSource must contain("Create Dialog")
     }
   }
 }

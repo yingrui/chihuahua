@@ -1,18 +1,19 @@
-@(person: Form[CreatePersonForm])(implicit messages: Messages)
+@(dialog: Form[CreateDialogForm])(implicit messages: Messages)
 
 @import helper._
 
-@main("Welcome to Play") {
+@main("Train my chihuahua") {
 	<script type='text/javascript' src='@routes.Assets.versioned("javascripts/index.js")'></script>
 
-	<ul id="persons"></ul>
+	<ul id="dialogs"></ul>
 
-  @form(routes.PersonController.addPerson()) {
-		@inputText(person("name"))
-		@inputText(person("age"))
+  @form(routes.DialogController.createDialog()) {
+		@inputText(dialog("topic"))
+		@inputText(dialog("relationship"))
+		@inputText(dialog("username"))
 
 		<div class="buttons">
-			<input type="submit" value="Add Person"/>
+			<input type="submit" value="Create Dialog"/>
 		</div>
 	}
 }

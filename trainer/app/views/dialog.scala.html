@@ -1,0 +1,27 @@
+@(talk: Form[TalkForm])(dialog: Dialog)(implicit messages: Messages)
+
+@import helper._
+
+@main("Train my chihuahua") {
+	<script type='text/javascript' src='@routes.Assets.versioned("javascripts/dialog.js")'></script>
+
+	<ul id="messages"></ul>
+
+  @form(routes.MessageController.talk()) {
+        <textarea name="content"></textarea>
+		<input id="dialog-id" type="hidden" name="dialogId" value="@dialog.id"/>
+		<input type="hidden" name="username" value="@dialog.username"/>
+		<div class="buttons">
+			<input type="submit" value="Send"/>
+		</div>
+	}
+
+    @form(routes.MessageController.teach()) {
+        <textarea name="content"></textarea>
+        <input type="hidden" name="dialogId" value="@dialog.id"/>
+        <input type="hidden" name="username" value="@dialog.username"/>
+        <div class="buttons">
+            <input type="submit" value="Teach Yoyo"/>
+        </div>
+    }
+}
