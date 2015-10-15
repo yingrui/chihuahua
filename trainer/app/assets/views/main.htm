@@ -1,0 +1,30 @@
+<div ng-controller="DialogController">
+    <h1>Dialogs:</h1>
+    <div class="dialogs">
+        <ul>
+            <li ng-repeat="dialog in dialogs">
+                <a href="#/dialogs/{{dialog.id}}">
+                    {{dialog.id}}. Topic: {{dialog.topic}}, Relationship: {{dialog.relationship}}, Username:
+                    {{dialog.username}}
+                </a>
+            </li>
+        </ul>
+    </div>
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <span class="navbar-brand">Start New Dialog: </span>
+
+                <form class="navbar-form navbar-left">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Username" ng-model="dialog.username"/>
+                        <input type="text" class="form-control" placeholder="Topic" ng-model="dialog.topic"/>
+                        <input type="text" class="form-control" placeholder="Relationship"
+                               ng-model="dialog.relationship">
+                    </div>
+                    <button type="submit" class="btn btn-default" ng-click="create()">Begin</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+</div>

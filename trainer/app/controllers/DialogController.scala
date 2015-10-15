@@ -38,33 +38,31 @@ class DialogController @Inject()(repo: DialogRepository, messageRepo: MessageRep
   }
 
   def index = Action {
-    Ok(views.html.index(dialogForm))
+    Ok(views.html.index())
   }
 
   def dialog(dialogId: Long) = Action.async {
     repo.getById(dialogId).map(dialog =>
-      Ok(views.html.dialog(talkForm)(dialog))
+      Ok(Json.toJson(dialog))
     )
   }
 
   def createDialog = Action.async { implicit request =>
     dialogForm.bindFromRequest.fold(
       (errorForm: Form[CreateDialogForm]) => {
-        Future.successful(Ok(views.html.index(errorForm)))
+        Future.successful(Ok(views.html.index()))
       },
-      // There were no errors in the from, so create the person.
       dialog => {
         repo.create(dialog.topic, dialog.relationship, dialog.username).map { savedDialog =>
-          // If successful, we simply redirect to the index page.
-          Redirect(routes.DialogController.dialog(savedDialog.id))
+          Created.withHeaders(("Location", s"/dialogs/${savedDialog.id}"))
         }
       }
     )
   }
 
   def getDialogs = Action.async {
-    repo.list().map { dialog =>
-      Ok(Json.toJson(dialog))
+    repo.list().map { dialogs =>
+      Ok(Json.toJson(dialogs))
     }
   }
 }

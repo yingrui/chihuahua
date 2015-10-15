@@ -33,6 +33,12 @@ class MessageController @Inject()(repo: MessageRepository, val messagesApi: Mess
     }
   }
 
+  def message(messageId: Long) = Action.async {
+    repo.getById(messageId).map(message =>
+      Ok(Json.toJson(message))
+    )
+  }
+
   def talk = Action.async { implicit request =>
     talkForm.bindFromRequest.fold(
       errorForm => {
@@ -41,7 +47,7 @@ class MessageController @Inject()(repo: MessageRepository, val messagesApi: Mess
       talk => {
         repo.create(talk.dialogId, talk.username, talk.content, currentUTCDateString()).map(msg => {
           reply(msg)
-          NoContent
+          Created.withHeaders(("Location", s"/messages/${msg.id}"))
         })
       }
     )

@@ -6,11 +6,12 @@
 GET     /                                             controllers.DialogController.index
 POST    /dialogs                                      controllers.DialogController.createDialog
 GET     /dialogs                                      controllers.DialogController.getDialogs
-GET     /dialog/:dialogId                             controllers.DialogController.dialog(dialogId: Long)
+GET     /dialogs/:dialogId                            controllers.DialogController.dialog(dialogId: Long)
 
 POST    /messages                                     controllers.MessageController.talk
 POST    /messages/teach                               controllers.MessageController.teach
 GET     /messages/dialog/:dialogId                    controllers.MessageController.getMessages(dialogId: Long)
+GET     /messages/messageId                           controllers.MessageController.message(messageId: Long)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET     /assets/*file                                 controllers.Assets.versioned(path="/public", file: Asset)
