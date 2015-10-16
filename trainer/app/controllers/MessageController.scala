@@ -23,7 +23,8 @@ class MessageController @Inject()(repo: MessageRepository, val messagesApi: Mess
     mapping(
       "dialogId" -> longNumber,
       "username" -> nonEmptyText,
-      "content" -> nonEmptyText
+      "content" -> nonEmptyText,
+      "tags" -> default(text, "")
     )(TalkForm.apply)(TalkForm.unapply)
   }
 
@@ -39,13 +40,30 @@ class MessageController @Inject()(repo: MessageRepository, val messagesApi: Mess
     )
   }
 
-  def talk = Action.async { implicit request =>
+  def updateMessage(messageId: Long) = Action.async { implicit request =>
     talkForm.bindFromRequest.fold(
       errorForm => {
         Future.successful(BadRequest)
       },
       talk => {
-        repo.create(talk.dialogId, talk.username, talk.content, currentUTCDateString()).map(msg => {
+        repo.update(messageId, talk.content, talk.tags).map(_ =>
+          NoContent
+        )
+      }
+    )
+  }
+
+  def deleteMessage(messageId: Long) = Action.async {
+    repo.delete(messageId).map(_ => NoContent)
+  }
+
+  def createMessage = Action.async { implicit request =>
+    talkForm.bindFromRequest.fold(
+      errorForm => {
+        Future.successful(BadRequest)
+      },
+      talk => {
+        repo.create(talk.dialogId, talk.username, talk.content, currentUTCDateString(), 0, talk.tags).map(msg => {
           reply(msg)
           Created.withHeaders(("Location", s"/messages/${msg.id}"))
         })
@@ -53,13 +71,14 @@ class MessageController @Inject()(repo: MessageRepository, val messagesApi: Mess
     )
   }
 
-  def teach = Action.async { implicit request =>
+  def teach(questionId: Long) = Action.async { implicit request =>
     talkForm.bindFromRequest.fold(
       errorForm => {
         Future.successful(BadRequest)
       },
       talk => {
-        repo.create(talk.dialogId, "Yoyo", talk.content, currentUTCDateString()).map(msg => {
+        val message = Await.result(repo.getById(questionId), Duration.Inf)
+        repo.create(talk.dialogId, talk.username, talk.content, toUTCDateString(add(message.getTime, 1)), questionId, talk.tags).map(msg => {
           NoContent
         })
       }
@@ -72,13 +91,14 @@ class MessageController @Inject()(repo: MessageRepository, val messagesApi: Mess
         val answers = matchedMessages.filter(_.id != message.id).map(_.id + 1).map(id => Await.result(repo.getById(id), Duration.Inf)).filter(_.username != message.username)
         if (!answers.isEmpty) {
           val index = new Random(Calendar.getInstance().getTimeInMillis).nextInt(answers.size)
-          repo.create(message.dialogId, "Yoyo", answers(index).content, currentUTCDateString())
+          repo.create(message.dialogId, "system", answers(index).content, currentUTCDateString(), message.id, "")
         }
       }), Duration.Inf)
   }
 
   def toUTCDateString(date: Date) = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX").format(date)
+  def add(date: Date, second: Int) = new Date(date.getTime + second * 1000L)
   def currentUTCDateString() = toUTCDateString(Calendar.getInstance().getTime)
 }
 
-case class TalkForm(dialogId: Long, username: String, content: String)
+case class TalkForm(dialogId: Long, username: String, content: String, tags: String)

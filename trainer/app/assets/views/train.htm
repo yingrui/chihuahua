@@ -2,7 +2,48 @@
     <h2>Topic: {{dialog.topic}} Relationship: {{dialog.relationship}} Username: {{dialog.username}}</h2>
     <div class="messages">
         <ul>
-            <li ng-repeat="message in messages">{{message.username}}: {{message.content}} {{message.timestamp}}</li>
+            <li ng-repeat="message in messages" ng-controller="TrainDialogMessageController" class="message">
+                <div ng-switch="vm.mode">
+                    <div ng-switch-when="display">
+                        <div ng-class="{true: 'align-right', false: 'align-left'}[isSystemUser]">
+                            <span ng-click="enterEditingMode()">
+                                <span class="username">{{message.username}}: </span>
+                                <span class="alert alert-success content">{{message.content}}</span>
+                            </span>
+                            <span class="action-icon">
+                                <button class="btn btn-info btn-sm" ng-click="enterEditingMode()"><i class="fa fa-edit"> Edit</i></button>
+                                <button class="btn btn-warning btn-sm" ng-click="enterInsertMode()"><i class="fa fa-plus-square"> Insert Answer</i></button>
+                                <button class="btn btn-danger btn-sm" ng-click="deleteMessage()"><i class="fa fa-trash-o"> Delete</i></button>
+                            </span>
+                        </div>
+                    </div>
+                    <div ng-switch-when="edit">
+                        <span class="align-left">
+                            <span class="username">{{message.username}}: </span>
+                            <input type="text" class="content" ng-model="message.content" value="{{message.content}}"/>
+                            <input type="text" class="content" ng-model="message.tags" value="{{message.tags}}"/>
+                        </span>
+                        <span>
+                            <button class="btn btn-default btn-sm"><i class="fa fa-check-square" ng-click="updateMessage()"> Confirm</i></button>
+                            <button class="btn btn-default btn-sm"><i class="fa fa-times" ng-click="enterDisplayMode()"> Cancel</i></button>
+                        </span>
+                    </div>
+                    <div ng-switch-when="insert">
+                        <span class="align-left" ng-click="enterEditingMode()">
+                            <span class="username">{{message.username}}: </span>
+                            <span class="alert alert-success content">{{message.content}}</span>
+                        </span>
+                        <span class="align-left">
+                            <input type="text" class="content" ng-model="vm.newMessage.content" value="" placeholder="answering..."/>
+                            <input type="text" class="content" ng-model="vm.newMessage.username" value="{{vm.newMessage.username}}" placeholder="username"/>
+                        </span>
+                        <span>
+                            <button class="btn btn-default btn-sm"><i class="fa fa-check" ng-click="addNewMessage()"> Add</i></button>
+                            <button class="btn btn-default btn-sm"><i class="fa fa-times" ng-click="enterDisplayMode()"> Cancel</i></button>
+                        </span>
+                    </div>
+                </div>
+            </li>
         </ul>
     </div>
     <nav class="navbar navbar-default">

@@ -23,29 +23,30 @@
             var message = { dialogId: scope.dialog.id, username: scope.dialog.username, content: scope.content };
 
             $http.post('/messages', message).success(function(data, status, headers){
-                loadMessages();
+                scope.loadMessages();
                 scope.content = "";
             });
         };
 
         scope.teach = function() {
-            var message = { dialogId: scope.dialog.id, username: 'Yoyo', content: scope.content};
+            var message = { dialogId: scope.dialog.id, username: 'system', content: scope.content};
+            var lastMessage = scope.messages[scope.messages.length - 1];
 
-            $http.post('/messages/teach', message).success(function(data, status, headers){
-                loadMessages();
+            $http.post('/messages/' + lastMessage.id + '/teach', message).success(function(data, status, headers){
+                scope.loadMessages();
                 scope.content = "";
             });
         };
 
-        function loadMessages() {
-           $http.get('/messages/dialog/' + $routeParams.dialogId).success(function(data){
+        scope.loadMessages = function () {
+           $http.get('/dialogs/' + $routeParams.dialogId + "/messages").success(function(data){
                scope.messages = data;
            });
-        }
+        };
 
         $http.get('/dialogs/' + $routeParams.dialogId).success(function(data){
             scope.dialog = data;
-            loadMessages();
+            scope.loadMessages();
         });
     }]);
 

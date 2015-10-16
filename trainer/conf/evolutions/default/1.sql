@@ -12,7 +12,9 @@ create table "messages" (
   "dialog_id" bigint,
   "username" varchar not null,
   "content" varchar not null,
-  "timestamp" varchar not null
+  "timestamp" varchar not null,
+  "questionId" bigint,
+  "tags" varchar
 );
 
 # --- !Downs

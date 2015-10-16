@@ -1,22 +1,15 @@
 package controllers
 
-import java.text.SimpleDateFormat
-import java.util.{Date, Calendar}
+import javax.inject._
 
-import play.api._
-import play.api.mvc._
-import play.api.i18n._
+import dal._
 import play.api.data.Form
 import play.api.data.Forms._
-import play.api.data.validation.Constraints._
+import play.api.i18n._
 import play.api.libs.json.Json
-import models._
-import dal._
+import play.api.mvc._
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
-
-import javax.inject._
+import scala.concurrent.{ExecutionContext, Future}
 
 class DialogController @Inject()(repo: DialogRepository, messageRepo: MessageRepository, val messagesApi: MessagesApi)
                                 (implicit ec: ExecutionContext) extends Controller with I18nSupport {
@@ -27,14 +20,6 @@ class DialogController @Inject()(repo: DialogRepository, messageRepo: MessageRep
       "relationship" -> nonEmptyText,
       "username" -> nonEmptyText
     )(CreateDialogForm.apply)(CreateDialogForm.unapply)
-  }
-
-  val talkForm: Form[TalkForm] = Form {
-    mapping(
-      "dialogId" -> longNumber,
-      "username" -> nonEmptyText,
-      "content" -> nonEmptyText
-    )(TalkForm.apply)(TalkForm.unapply)
   }
 
   def index = Action {

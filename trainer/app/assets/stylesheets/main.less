@@ -1,38 +1,40 @@
-dl {
-  clear: both;
-  padding: 10px;
+.main {
+  max-width: 768px;
+}
 
-  dt {
-    float: left;
-    width: 60px;
-    font-weight: bold;
+.align-right {
+  float: right;
+}
+
+.align-left {
+  float: left;
+}
+
+.messages {
+  li {
+    list-style-type: none;
+    display: inline-block;
+    width: 100%;
+    margin: 0px;
   }
 
-  dd {
-    float: left;
-    margin-left: 10px;
-  }
-
-  .info {
+  .action-icon {
     display: none;
   }
 
-  .error {
-    color: red;
+  .message {
+    padding: 15px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+
+    .content {
+      margin-right: 10px;
+    }
   }
 }
 
-.buttons {
-  clear: both;
-  padding: 10px;
-}
-
-#persons {
-  .name {
-    display: inline-block;
-    width: 60px;
-  }
-  .age {
+.message:hover {
+  .action-icon {
     display: inline-block;
   }
 }
