@@ -23,8 +23,12 @@
             var message = { dialogId: scope.dialog.id, username: scope.dialog.username, content: scope.content };
 
             $http.post('/messages', message).success(function(data, status, headers){
-                scope.loadMessages();
-                scope.content = "";
+                var location = headers('Location');
+                var messageId = location.substring(location.lastIndexOf('/') + 1);
+                $http.put('/messages/' + messageId + '/reply').success(function(data, status) {
+                    scope.loadMessages();
+                    scope.content = "";
+                });
             });
         };
 

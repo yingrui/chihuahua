@@ -11,6 +11,7 @@ GET     /dialogs/:dialogId/messages                   controllers.MessageControl
 
 POST    /messages                                     controllers.MessageController.createMessage
 POST    /messages/:messageId/teach                    controllers.MessageController.teach(messageId: Long)
+PUT     /messages/:messageId/reply                    controllers.MessageController.reply(messageId: Long)
 GET     /messages/:messageId                          controllers.MessageController.message(messageId: Long)
 PUT     /messages/:messageId                          controllers.MessageController.updateMessage(messageId: Long)
 DELETE  /messages/:messageId                          controllers.MessageController.deleteMessage(messageId: Long)
