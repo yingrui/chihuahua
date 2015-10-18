@@ -9,7 +9,8 @@ import play.api.i18n._
 import play.api.libs.json.Json
 import play.api.mvc._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 
 class DialogController @Inject()(repo: DialogRepository, messageRepo: MessageRepository, val messagesApi: MessagesApi)
                                 (implicit ec: ExecutionContext) extends Controller with I18nSupport {
@@ -43,6 +44,22 @@ class DialogController @Inject()(repo: DialogRepository, messageRepo: MessageRep
         }
       }
     )
+  }
+
+  def updateDialog(dialogId: Long)  = Action.async { implicit request =>
+    dialogForm.bindFromRequest.fold(
+      (errorForm: Form[CreateDialogForm]) => {
+        Future.successful(BadRequest)
+      },
+      dialog => {
+        repo.update(dialogId, dialog.topic, dialog.relationship).map(_ => NoContent)
+      }
+    )
+  }
+
+  def deleteDialog(dialogId: Long) = Action.async {
+    Await.result(messageRepo.deleteMessages(dialogId), Duration.Inf)
+    repo.delete(dialogId).map(_ => Ok)
   }
 
   def getDialogs = Action.async {

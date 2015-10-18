@@ -32,6 +32,16 @@ class DialogRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(impl
       .into(((data, id) => Dialog(id, data._1, data._2, data._3))) += (topic, relationship, username)
   }
 
+  def update(dialogId: Long, topic: String, relationship: String): Future[Int] = db.run {
+    dialogs.filter(_.id === dialogId)
+      .map(dialog => (dialog.topic, dialog.relationship))
+      .update((topic, relationship))
+  }
+
+  def delete(id: Long): Future[Int] = db.run {
+    dialogs.filter(_.id === id).delete
+  }
+
   def getById(id: Long): Future[Dialog] = db.run {
     dialogs.filter(_.id === id).result.head
   }

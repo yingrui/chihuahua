@@ -7,6 +7,8 @@ GET     /                                             controllers.DialogControll
 POST    /dialogs                                      controllers.DialogController.createDialog
 GET     /dialogs                                      controllers.DialogController.getDialogs
 GET     /dialogs/:dialogId                            controllers.DialogController.dialog(dialogId: Long)
+PUT     /dialogs/:dialogId                            controllers.DialogController.updateDialog(dialogId: Long)
+DELETE  /dialogs/:dialogId                            controllers.DialogController.deleteDialog(dialogId: Long)
 GET     /dialogs/:dialogId/messages                   controllers.MessageController.getMessages(dialogId: Long)
 
 POST    /messages                                     controllers.MessageController.createMessage

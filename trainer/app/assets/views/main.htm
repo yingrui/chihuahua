@@ -1,12 +1,30 @@
-<div ng-controller="DialogController">
+<div ng-controller="DialogViewController">
     <h1>Dialogs:</h1>
     <div class="dialogs">
         <ul>
-            <li ng-repeat="dialog in dialogs">
-                <a href="#/dialogs/{{dialog.id}}">
-                    {{dialog.id}}. Topic: {{dialog.topic}}, Relationship: {{dialog.relationship}}, Username:
-                    {{dialog.username}}
-                </a>
+            <li ng-repeat="dialog in dialogs" class="dialog" ng-controller="DialogController">
+                <div ng-switch="vm.mode">
+                    <div ng-switch-when="display">
+                        <a href="#/dialogs/{{dialog.id}}">
+                            {{dialog.id}}. {{dialog.username}}, {{dialog.relationship}}, Topic: {{dialog.topic}}
+                        </a>
+                        <span class="action-icon">
+                            <button class="btn btn-default btn-sm" ng-click="enterEditingMode()"><i class="fa fa-edit"> Edit</i></button>
+                            <button class="btn btn-danger btn-sm" ng-click="deleteDialog()"><i class="fa fa-trash-o"> Delete</i></button>
+                        </span>
+                    </div>
+                    <div ng-switch-when="edit">
+                        <span>
+                            <span>{{dialog.username}}, </span>
+                            <input type="text" ng-model="dialog.topic" value="{{dialog.topic}}" placeholder="Topic"/>
+                            <input type="text" ng-model="dialog.relationship" value="{{dialog.relationship}}" placeholder="Relationship"/>
+                        </span>
+                        <span class="action-icon">
+                            <button class="btn btn-default btn-sm" ng-click="updateDialog()"><i class="fa fa-trash-o"> Confirm</i></button>
+                            <button class="btn btn-default btn-sm" ng-click="enterDisplayMode()"><i class="fa fa-edit"> Cancel</i></button>
+                        </span>
+                    </div>
+                </div>
             </li>
         </ul>
     </div>

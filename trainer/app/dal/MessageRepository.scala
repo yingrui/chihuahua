@@ -56,4 +56,8 @@ class MessageRepository @Inject() (dbConfigProvider: DatabaseConfigProvider)(imp
   def delete(id: Long): Future[Int] = db.run {
     messages.filter(_.id === id).delete
   }
+
+  def deleteMessages(dialogId: Long): Future[Int] = db.run {
+    messages.filter(_.dialogId === dialogId).delete
+  }
 }
